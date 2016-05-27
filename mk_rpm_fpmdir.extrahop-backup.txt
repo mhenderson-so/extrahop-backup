@@ -1,0 +1,1 @@
+exec /usr/sbin/extrahop-backup cmd/extrahop-backup/extrahop-backup
