@@ -3,6 +3,11 @@
 	"ignore": "test",
 	"package": [
 		{
+			"path": "bosun.org/slog",
+			"revision": "a5115fadfc3e7c6db4b0bb8e61a3af6eb13c3cac",
+			"revisionTime": "2016-03-17T16:48:57-04:00"
+		},
+		{
 			"path": "github.com/akavel/rsrc/binutil",
 			"revision": "ba14da1f827188454a4591717fff29999010887f",
 			"revisionTime": "2015-11-03T21:43:39+01:00"
@@ -21,6 +26,24 @@
 			"path": "github.com/josephspurrier/goversioninfo",
 			"revision": "096c7bd04a78bdb9b1bd32f81243644544e86f5c",
 			"revisionTime": "2016-03-31T00:45:19-04:00"
+		},
+		{
+			"origin": "bosun.org/vendor/golang.org/x/sys/windows",
+			"path": "golang.org/x/sys/windows",
+			"revision": "a5115fadfc3e7c6db4b0bb8e61a3af6eb13c3cac",
+			"revisionTime": "2016-03-17T16:48:57-04:00"
+		},
+		{
+			"origin": "bosun.org/vendor/golang.org/x/sys/windows/svc",
+			"path": "golang.org/x/sys/windows/svc",
+			"revision": "a5115fadfc3e7c6db4b0bb8e61a3af6eb13c3cac",
+			"revisionTime": "2016-03-17T16:48:57-04:00"
+		},
+		{
+			"origin": "bosun.org/vendor/golang.org/x/sys/windows/svc/debug",
+			"path": "golang.org/x/sys/windows/svc/debug",
+			"revision": "a5115fadfc3e7c6db4b0bb8e61a3af6eb13c3cac",
+			"revisionTime": "2016-03-17T16:48:57-04:00"
 		}
 	]
 }
