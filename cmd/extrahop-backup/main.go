@@ -14,6 +14,8 @@ import (
 	"runtime"
 	"strings"
 
+	"bosun.org/slog"
+
 	"github.com/mhenderson-so/extrahop-backup/version"
 )
 
@@ -25,8 +27,6 @@ var (
 	fPrintV   = flag.Bool("v", false, "Alias to -version.")
 	fPrintVer = flag.Bool("version", false, "Print version information.")
 	fVerbose  = flag.Bool("verbose", false, "Output verbose details.")
-
-	ver = "ExtraHop backup utility v0.0.2"
 )
 
 func main() {
@@ -57,7 +57,7 @@ func main() {
 	if *fGitDir == os.TempDir() {
 		*fGitDir, _ = ioutil.TempDir("", "ExtraHopBackup")
 		if *fVerbose {
-			fmt.Println("Setting temporary git checkout directory to", *fGitDir)
+			slog.Infoln("Setting temporary git checkout directory to", *fGitDir)
 		}
 	} else {
 		*fGitDir += "ExtraHopBackup"
@@ -91,7 +91,7 @@ func main() {
 
 	//Delete the temporary folder
 	if *fVerbose {
-		fmt.Println("Cleaning up. Deleting ", *fGitDir)
+		slog.Infoln("Cleaning up. Deleting ", *fGitDir)
 	}
 
 	dirErr := os.RemoveAll(*fGitDir)
@@ -101,8 +101,8 @@ func main() {
 	if dirErr != nil && runtime.GOOS == "windows" {
 		cmd := exec.Command("cmd.exe", "/C", "rmdir", "/S", "/Q", *fGitDir)
 		if *fVerbose {
-			fmt.Println("Cleaning up. Can't delete:", dirErr)
-			fmt.Println("Cleaning up. Invoking OS deletion:", cmd.Args)
+			slog.Warningln("Cleaning up. Can't delete:", dirErr)
+			slog.Warningln("Cleaning up. Invoking OS deletion:", cmd.Args)
 		}
 		cmd.Run()
 	}
@@ -119,7 +119,7 @@ func backupEHEndpoint(endpoint string, client *http.Client) error {
 	backupFile := path.Join(*fGitDir, fmt.Sprintf("%v.json", endpointName))
 
 	if *fVerbose {
-		fmt.Println("Writing", endpoint, "to", backupFile)
+		slog.Infoln("Writing", endpoint, "to", backupFile)
 	}
 
 	err = ioutil.WriteFile(backupFile, ehBody, 0755)
@@ -141,7 +141,7 @@ func invokeEHAPI(endpoint string, client *http.Client) ([]byte, error) {
 	req.Header.Set("Authorization", fmt.Sprintf("ExtraHop apikey=%v", *fEHAPIKey))
 
 	if *fVerbose {
-		fmt.Println("Requesting", req.URL.String())
+		slog.Infoln("Requesting", req.URL.String())
 	}
 	res, err := client.Do(req)
 
@@ -177,7 +177,8 @@ func gitClone(tmpDir, repoDir string) {
 	//cmd.Dir = tmpDir
 	setVerbose(cmd)
 	if err := cmd.Run(); err != nil {
-		panic(fmt.Sprintf("could not clone the repo: %v, %v", cmd, err))
+		slog.Errorf("could not clone the repo: %v, %v", cmd, err)
+		panic("could not clone the repo")
 	}
 }
 
@@ -187,10 +188,11 @@ func pushAll(repoDir, branch string) {
 	cmd.Dir = repoDir
 	setVerbose(cmd)
 	if err := cmd.Run(); err != nil {
-		panic(fmt.Sprintf("could not add into git: %v", cmd))
+		slog.Errorf("could not add into git: %v", cmd)
+		panic("could not add into git")
 	}
 
-	msg := fmt.Sprintf("autoCommit")
+	msg := "autoCommit"
 	// get Added and Changed files TODO
 	// git ls-files --others --exclude-standar : added
 	// git ls-files -m : changed
@@ -200,12 +202,13 @@ func pushAll(repoDir, branch string) {
 	txt, err := cmd.CombinedOutput()
 	if strings.Contains(string(txt), "nothing to commit") {
 		if *fVerbose {
-			fmt.Println("No changes detected, don't push")
+			slog.Infoln("No changes detected, don't push")
 		}
 		return
 	}
 	if err != nil {
-		panic("could not read git commit output: " + err.Error())
+		slog.Errorln("could not read git commit output:", err)
+		panic("could not read git commit output")
 	}
 
 	if *fVerbose {
@@ -215,6 +218,7 @@ func pushAll(repoDir, branch string) {
 	cmd.Dir = repoDir
 	setVerbose(cmd)
 	if err = cmd.Run(); err != nil {
-		panic(fmt.Sprintf("could not push: %v", cmd))
+		slog.Errorf("could not push: %v", cmd)
+		panic("could not push")
 	}
 }
