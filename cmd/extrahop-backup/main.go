@@ -13,6 +13,8 @@ import (
 	"path"
 	"runtime"
 	"strings"
+
+	"github.com/mhenderson-so/extrahop-backup/version"
 )
 
 var (
@@ -24,14 +26,14 @@ var (
 	fPrintVer = flag.Bool("version", false, "Print version information.")
 	fVerbose  = flag.Bool("verbose", false, "Output verbose details.")
 
-	ver = "ExtraHop backup utility v0.0.1"
+	ver = "ExtraHop backup utility v0.0.2"
 )
 
 func main() {
 	flag.Parse()
 
 	if *fPrintVer || *fPrintV {
-		fmt.Println(ver)
+		fmt.Println(version.GetVersionInfo("extrahop-backup"))
 		return
 	}
 
@@ -197,7 +199,9 @@ func pushAll(repoDir, branch string) {
 	cmd.Dir = repoDir
 	txt, err := cmd.CombinedOutput()
 	if strings.Contains(string(txt), "nothing to commit") {
-		fmt.Println("No changes detected, don't push")
+		if *fVerbose {
+			fmt.Println("No changes detected, don't push")
+		}
 		return
 	}
 	if err != nil {

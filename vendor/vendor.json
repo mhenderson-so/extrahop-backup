@@ -1,0 +1,26 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"path": "github.com/akavel/rsrc/binutil",
+			"revision": "ba14da1f827188454a4591717fff29999010887f",
+			"revisionTime": "2015-11-03T21:43:39+01:00"
+		},
+		{
+			"path": "github.com/akavel/rsrc/coff",
+			"revision": "ba14da1f827188454a4591717fff29999010887f",
+			"revisionTime": "2015-11-03T21:43:39+01:00"
+		},
+		{
+			"path": "github.com/akavel/rsrc/ico",
+			"revision": "ba14da1f827188454a4591717fff29999010887f",
+			"revisionTime": "2015-11-03T21:43:39+01:00"
+		},
+		{
+			"path": "github.com/josephspurrier/goversioninfo",
+			"revision": "096c7bd04a78bdb9b1bd32f81243644544e86f5c",
+			"revisionTime": "2016-03-31T00:45:19-04:00"
+		}
+	]
+}
