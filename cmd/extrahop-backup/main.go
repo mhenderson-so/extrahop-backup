@@ -173,12 +173,17 @@ func setVerbose(cmd *exec.Cmd) {
 // gitClone does what it says on the tin. It clones a git repo to a directory.
 func gitClone(tmpDir, repoDir string) {
 	// clone in a temporary rep
-	cmd := exec.Command("git", "clone", *fGitRepo, tmpDir, "--depth=1", "--no-single-branch") // depth: speed up things
-	//cmd.Dir = tmpDir
-	setVerbose(cmd)
-	if err := cmd.Run(); err != nil {
-		slog.Errorf("could not clone the repo: %v, %v", cmd, err)
-		panic("could not clone the repo")
+	for tries := 0; ; tries++ {
+		// depth: speed up things
+		cmd := exec.Command("git", "clone", *fGitRepo, tmpDir,
+			"--depth=1", "--no-single-branch")
+		setVerbose(cmd)
+		if err := cmd.Run(); err == nil {
+			return
+		} else if tries >= 2 {
+			slog.Errorf("could not clone the repo: %v, %v", cmd, err)
+			panic("could not clone the repo")
+		}
 	}
 }
 
